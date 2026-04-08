@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+  font-family: 'IBM Plex Sans', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #fff;
+  background: #1a1a1a;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --text-main: #ffffff;
+  --display-font: 'Manrope', 'IBM Plex Sans', sans-serif;
+  --map-panel-glass-bg: rgba(67, 64, 64, 0.41);
+  --map-panel-glass-bg-hover: rgba(67, 64, 64, 0.49);
+  --map-panel-glass-radius: 16px;
+  --map-panel-glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  --map-panel-glass-blur: blur(5.2px);
+  --map-glass-bg: var(--map-panel-glass-bg);
+  --map-glass-bg-hover: var(--map-panel-glass-bg-hover);
+  --map-glass-radius: var(--map-panel-glass-radius);
+  --map-glass-shadow: var(--map-panel-glass-shadow);
+  --map-glass-blur: var(--map-panel-glass-blur);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display-font);
+  color: var(--text-main);
+  letter-spacing: -0.035em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
