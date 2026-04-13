@@ -1,6 +1,6 @@
 # Renewably Wind
 
-Renewably is a renewable energy optimization platform for exploring wind and solar suitability, selecting candidate development areas, and generating optimized site recommendations.
+Renewably is a renewable energy optimization platform for exploring wind farm suitability, selecting candidate development areas, and generating optimized site recommendations.
 
 Live app: [https://renewably-wind.onrender.com/](https://renewably-wind.onrender.com/)
 
