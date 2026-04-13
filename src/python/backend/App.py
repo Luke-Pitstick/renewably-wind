@@ -411,6 +411,26 @@ class ModelService:
         else:
             chosen, totals = _select_power(scored, target_value)
 
+        exclusion_counts = {
+            reason: int(count)
+            for reason, count in scored["siting_exclusion_reason"]
+            .value_counts()
+            .items()
+            if reason
+        }
+        urban_excluded = (
+            exclusion_counts.get("urban_land_cover", 0)
+            + exclusion_counts.get("high_population_density", 0)
+        )
+        siting_notes: list[str] = []
+        if urban_excluded:
+            siting_notes.append(
+                f"{urban_excluded} candidate site(s) were removed because they "
+                "fall in urban or densely populated areas. Wind turbines are not "
+                "sited near residential populations due to noise, safety, and "
+                "zoning restrictions, even when the model scored them favorably."
+            )
+
         debug = {
             "hex_count": len(cells),
             "probability_summary": {
@@ -426,6 +446,7 @@ class ModelService:
                 "max": float(scored["wind_speed"].max()),
                 "mean": float(scored["wind_speed"].mean()),
             },
+            "siting_exclusions": exclusion_counts,
         }
         print(
             "Optimization debug:",
@@ -441,6 +462,8 @@ class ModelService:
             "device_cost_usd": WIND_LIFETIME_COST_USD_PER_KW * WIND_TURBINE_RATED_KW,
             "device_rated_kw": WIND_TURBINE_RATED_KW,
             "points": _points_payload(chosen),
+            "siting_notes": siting_notes,
+            "siting_exclusions": exclusion_counts,
             "debug": debug,
             **totals,
         }

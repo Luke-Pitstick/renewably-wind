@@ -269,15 +269,40 @@ def compute_features_for_cells(h3_indices: list[str]) -> pd.DataFrame:
     return df
 
 
+# NLCD developed-land classes: 22 low-, 23 medium-, 24 high-intensity.
+URBAN_LAND_TYPES = (22, 23, 24)
+# Hard cap on residential density (people/km²) regardless of model output.
+URBAN_POP_DENSITY_THRESHOLD = 200.0
+
+
 def apply_siting_constraints(df: pd.DataFrame) -> pd.DataFrame:
-    """Zero out probability for obviously unsuitable sites."""
-    unsuitable = (
-        df["land_type"].isin([11, 12])   # open water, ice/snow
-        | (df["protected_area"] == 1)    # protected land
-        | (df["slope_deg"] > 20)         # too steep
-        | (df["pop_density"] > 500)      # dense urban
-    )
-    df.loc[unsuitable, "turbine_probability"] = 0.0
+    """Zero out probability for obviously unsuitable sites.
+
+    Also annotates each row with a ``siting_exclusion_reason`` string so the
+    caller can explain to users why candidate cells were dropped (in particular
+    urban / high-density cells that the model might otherwise have scored
+    favorably).
+    """
+    water_ice = df["land_type"].isin([11, 12])
+    protected = df["protected_area"] == 1
+    steep = df["slope_deg"] > 20
+    urban_land = df["land_type"].isin(URBAN_LAND_TYPES)
+    high_pop = df["pop_density"] > URBAN_POP_DENSITY_THRESHOLD
+
+    reasons = np.array([""] * len(df), dtype=object)
+    # Order matters: later assignments override earlier ones; urban/pop win
+    # so we always surface the people-facing reason when applicable.
+    reasons[steep.to_numpy()] = "steep_slope"
+    reasons[protected.to_numpy()] = "protected_area"
+    reasons[water_ice.to_numpy()] = "water_or_ice"
+    reasons[urban_land.to_numpy()] = "urban_land_cover"
+    reasons[high_pop.to_numpy()] = "high_population_density"
+
+    unsuitable = water_ice | protected | steep | urban_land | high_pop
+    df = df.copy()
+    df["siting_exclusion_reason"] = reasons
+    if "turbine_probability" in df.columns:
+        df.loc[unsuitable, "turbine_probability"] = 0.0
     return df
 
 

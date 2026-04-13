@@ -906,6 +906,18 @@
   line-height: 1.38;
 }
 
+.input-error {
+  margin: 0.25rem 0 0;
+  color: #f5a9a0;
+  font-size: 0.68rem;
+  line-height: 1.32;
+}
+
+.input-block input[aria-invalid='true'] {
+  border-color: rgba(245, 169, 160, 0.7);
+  box-shadow: 0 0 0 1px rgba(245, 169, 160, 0.25);
+}
+
 .sidebar-results {
   gap: 0.48rem;
 }
@@ -1029,6 +1041,26 @@
 .overlay-results-actions {
   display: grid;
   margin-top: 0.7rem;
+}
+
+.siting-notes {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 193, 7, 0.12);
+  border: 1px solid rgba(255, 193, 7, 0.45);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.siting-notes-title {
+  margin: 0 0 0.35rem 0;
+  font-weight: 600;
+}
+
+.siting-notes ul {
+  margin: 0;
+  padding-left: 1.1rem;
 }
 
 .overlay-results-header {

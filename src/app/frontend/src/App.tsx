@@ -64,6 +64,8 @@ type OptimizationResponse = {
   total_raw_power_kwh?: number
   total_effective_cost_usd?: number
   power_basis?: string
+  siting_notes?: string[]
+  siting_exclusions?: Record<string, number>
   points?: OptimizationPoint[]
 }
 
@@ -90,6 +92,28 @@ const REPOSITORY_URL = 'https://github.com/Luke-Pitstick/renewably-wind'
 
 function isFiniteCoordinate(value: number) {
   return Number.isFinite(value)
+}
+
+function parseTargetValue(raw: string): { value: number | null; error: string | null } {
+  const trimmed = raw.trim()
+  if (trimmed.length === 0) {
+    return { value: null, error: null }
+  }
+
+  const stripped = trimmed.replace(/,/g, '')
+  if (!/^\d+(\.\d+)?$/.test(stripped)) {
+    return { value: null, error: 'Enter a number (digits, commas, and an optional decimal point).' }
+  }
+
+  const parsed = Number(stripped)
+  if (!Number.isFinite(parsed)) {
+    return { value: null, error: 'Value is too large to parse.' }
+  }
+  if (parsed <= 0) {
+    return { value: null, error: 'Value must be greater than zero.' }
+  }
+
+  return { value: parsed, error: null }
 }
 
 function buildOptimizationGeoJson(points: OptimizationPoint[]): GeoJsonFeatureCollection {
@@ -201,11 +225,12 @@ function App() {
     ? 'Polygon selected on map'
     : 'No area selected'
   const hasBoundingBox = boundingBox !== null
-  const optimizationTargetValue = Number(optimizationValue.replace(/,/g, ''))
+  const { value: parsedTargetValue, error: targetValueError } =
+    parseTargetValue(optimizationValue)
+  const optimizationTargetValue = parsedTargetValue ?? Number.NaN
   const canSubmitOptimization =
     hasBoundingBox &&
-    Number.isFinite(optimizationTargetValue) &&
-    optimizationTargetValue > 0 &&
+    parsedTargetValue !== null &&
     !optimizationSubmitting
   const optimizationPoints = optimizationResult?.points ?? []
   const downloadableOptimizationPointCount = optimizationPoints.filter(
@@ -1000,12 +1025,26 @@ function App() {
                   <div className="input-row">
                     <input
                       type="text"
+                      inputMode="decimal"
                       value={optimizationValue}
                       onChange={(event) => setOptimizationValue(event.target.value)}
                       placeholder={inputPlaceholder}
+                      aria-invalid={targetValueError !== null}
+                      aria-describedby={
+                        targetValueError !== null ? 'optimization-value-error' : undefined
+                      }
                     />
                     <span className="input-unit">{inputUnit}</span>
                   </div>
+                  {targetValueError !== null ? (
+                    <p
+                      id="optimization-value-error"
+                      className="input-error"
+                      role="alert"
+                    >
+                      {targetValueError}
+                    </p>
+                  ) : null}
                 </label>
 
                 <div className="sheet-section-head">
@@ -1204,6 +1243,17 @@ function App() {
                   </div>
                 ) : null}
               </div>
+              {optimizationResult.siting_notes &&
+              optimizationResult.siting_notes.length > 0 ? (
+                <div className="siting-notes" role="note">
+                  <p className="siting-notes-title">Siting adjustments</p>
+                  <ul>
+                    {optimizationResult.siting_notes.map((note, index) => (
+                      <li key={index}>{note}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
               <div className="overlay-results-actions">
                 <button
                   type="button"
