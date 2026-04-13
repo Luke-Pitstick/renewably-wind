@@ -1861,6 +1861,137 @@
   line-height: 1.5;
 }
 
+.app-help-tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0 1.25rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(226, 234, 228, 0.12);
+}
+
+.app-help-tab {
+  background: transparent;
+  border: none;
+  color: rgba(226, 234, 228, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.app-help-tab:hover {
+  color: rgba(226, 234, 228, 0.9);
+}
+
+.app-help-tab.is-active {
+  color: #d8ff6d;
+  border-bottom-color: #d8ff6d;
+}
+
+.app-help-economics {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.app-help-lead {
+  color: rgba(226, 234, 228, 0.82);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.app-help-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.app-help-card {
+  background: rgba(23, 49, 42, 0.55);
+  border: 1px solid rgba(216, 255, 109, 0.14);
+  border-radius: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.app-help-card .panel-label {
+  font-size: 0.65rem;
+  color: rgba(226, 234, 228, 0.6);
+}
+
+.app-help-card strong {
+  color: #d8ff6d;
+  font-size: 1.0rem;
+  letter-spacing: -0.01em;
+}
+
+.app-help-card p {
+  color: rgba(226, 234, 228, 0.72);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.app-help-card-highlight {
+  background: linear-gradient(135deg, rgba(216, 255, 109, 0.12), rgba(23, 49, 42, 0.6));
+  border-color: rgba(216, 255, 109, 0.32);
+}
+
+.app-help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.app-help-section strong {
+  color: #eaf2ec;
+  font-size: 0.85rem;
+}
+
+.app-help-section p {
+  color: rgba(226, 234, 228, 0.75);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.app-help-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: rgba(226, 234, 228, 0.82);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.app-help-list strong {
+  color: #d8ff6d;
+  font-weight: 600;
+}
+
+.app-help-footnote {
+  color: rgba(226, 234, 228, 0.55);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .app-help-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .map-bottom-left {
   position: absolute;
   left: 0.55rem;
