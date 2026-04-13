@@ -150,7 +150,14 @@ function App() {
   const [powerLinesVisible, setPowerLinesVisible] = useState(false)
   const [optimizationPanelOpen, setOptimizationPanelOpen] = useState(false)
   const [layerMenuOpen, setLayerMenuOpen] = useState(false)
-  const [helpModalOpen, setHelpModalOpen] = useState(false)
+  const [helpModalOpen, setHelpModalOpen] = useState(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      return window.localStorage.getItem('renewably.helpSeen') !== 'true'
+    } catch {
+      return false
+    }
+  })
   const [optimizationMode, setOptimizationMode] =
     useState<OptimizationMode>('cash')
   const [optimizationValue, setOptimizationValue] = useState('')
@@ -267,6 +274,12 @@ function App() {
   useEffect(() => {
     if (!helpModalOpen) {
       return
+    }
+
+    try {
+      window.localStorage.setItem('renewably.helpSeen', 'true')
+    } catch {
+      // ignore storage errors
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
