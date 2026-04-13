@@ -22,7 +22,6 @@ Live app: [https://renewably-wind.onrender.com/](https://renewably-wind.onrender
 
 ## How the wind model works
 
-**Both models were created from scratch by me**
 Renewably's wind pipeline has two models that work together to score potential wind sites:
 
 ### 1. Wind speed regressor (`wind_xgboost_v2.pkl`)
@@ -69,6 +68,7 @@ Predicts the probability that an H3 res-7 cell is suitable for a utility-scale w
 - `ml/notebooks/viability/generate_h3_cells.ipynb` — H3 cell generation + turbine labelling
 - `ml/notebooks/viability/model.ipynb` — classifier training + evaluation
 - `ml/scripts/` — batch exporters for caching res-7 terrain and exogenous features
+- Both models were created from scratch by me
 
 ## Development
 
