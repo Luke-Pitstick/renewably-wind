@@ -18,9 +18,11 @@ Live app: [https://renewably-wind.onrender.com/](https://renewably-wind.onrender
 - Toggle solar, wind, topography, and infrastructure layers
 - Draw a polygon and optimize for budget or target power
 - Review recommended sites and export results as GeoJSON
+- Frontend created with Claude Code and some CSS/layout tuning by me
 
 ## How the wind model works
 
+**Both models were created from scratch by me**
 Renewably's wind pipeline has two models that work together to score potential wind sites:
 
 ### 1. Wind speed regressor (`wind_xgboost_v2.pkl`)
