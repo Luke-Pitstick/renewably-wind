@@ -421,6 +421,7 @@ class ModelService:
         urban_excluded = (
             exclusion_counts.get("urban_land_cover", 0)
             + exclusion_counts.get("high_population_density", 0)
+            + exclusion_counts.get("impervious_surface", 0)
         )
         siting_notes: list[str] = []
         if urban_excluded:

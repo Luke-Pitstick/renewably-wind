@@ -269,10 +269,18 @@ def compute_features_for_cells(h3_indices: list[str]) -> pd.DataFrame:
     return df
 
 
-# NLCD developed-land classes: 22 low-, 23 medium-, 24 high-intensity.
-URBAN_LAND_TYPES = (22, 23, 24)
+# NLCD developed-land classes.
+# 21 = developed open space, 22 low-, 23 medium-, 24 high-intensity.
+# We include 21 because suburban/city-park cells still fail turbine siting
+# (setbacks, zoning) even if the model likes the surrounding terrain.
+URBAN_LAND_TYPES = (21, 22, 23, 24)
 # Hard cap on residential density (people/km²) regardless of model output.
-URBAN_POP_DENSITY_THRESHOLD = 200.0
+# Low enough to catch suburban Denver where the res-7 terrain cache smooths
+# the land-type signal below the developed-land classes.
+URBAN_POP_DENSITY_THRESHOLD = 75.0
+# NLCD impervious-surface percentage. Urban cores are typically >25%;
+# this is a backstop when land_type aggregation at res-7 washes out.
+URBAN_IMPERVIOUS_THRESHOLD = 15.0
 
 
 def apply_siting_constraints(df: pd.DataFrame) -> pd.DataFrame:
@@ -288,6 +296,7 @@ def apply_siting_constraints(df: pd.DataFrame) -> pd.DataFrame:
     steep = df["slope_deg"] > 20
     urban_land = df["land_type"].isin(URBAN_LAND_TYPES)
     high_pop = df["pop_density"] > URBAN_POP_DENSITY_THRESHOLD
+    impervious = df["impervious"] > URBAN_IMPERVIOUS_THRESHOLD
 
     reasons = np.array([""] * len(df), dtype=object)
     # Order matters: later assignments override earlier ones; urban/pop win
@@ -295,10 +304,13 @@ def apply_siting_constraints(df: pd.DataFrame) -> pd.DataFrame:
     reasons[steep.to_numpy()] = "steep_slope"
     reasons[protected.to_numpy()] = "protected_area"
     reasons[water_ice.to_numpy()] = "water_or_ice"
+    reasons[impervious.to_numpy()] = "impervious_surface"
     reasons[urban_land.to_numpy()] = "urban_land_cover"
     reasons[high_pop.to_numpy()] = "high_population_density"
 
-    unsuitable = water_ice | protected | steep | urban_land | high_pop
+    unsuitable = (
+        water_ice | protected | steep | urban_land | high_pop | impervious
+    )
     df = df.copy()
     df["siting_exclusion_reason"] = reasons
     if "turbine_probability" in df.columns:
