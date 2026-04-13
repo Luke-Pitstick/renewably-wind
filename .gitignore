@@ -237,9 +237,7 @@ dist/
 # Large data files - shapefiles, big geojson
 **/tiger_roads/
 src/python/ml/notebooks/data/transmission_lines.geojson
-src/app/frontend/public/data/us_wind_surface.geojson
 src/app/frontend/public/data/us_solar_surface.geojson
-src/app/frontend/public/data/wind_farm_sites.geojson
 
 # Playwright artifacts
 .playwright-mcp/
