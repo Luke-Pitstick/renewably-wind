@@ -15,7 +15,7 @@ Live app: [https://renewably-wind.onrender.com/](https://renewably-wind.onrender
 ## Frontend highlights
 
 - Search by city, state, or address
-- Toggle solar, wind, topography, and infrastructure layers
+- Toggle wind, topography, and infrastructure layers
 - Draw a polygon and optimize for budget or target power
 - Review recommended sites and export results as GeoJSON
 - Frontend created with Claude Code and some CSS/layout tuning by me
