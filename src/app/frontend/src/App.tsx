@@ -36,10 +36,7 @@ type OptimizationFocusRequest = {
 type OptimizationPoint = {
   lat: number
   lon: number
-  device_type: 'solar' | 'wind'
-  solar_power_kwh: number
   wind_power_kwh: number
-  solar_probability?: number
   wind_probability?: number
   turbine_probability?: number
   expected_power_kwh?: number
@@ -112,14 +109,16 @@ function buildOptimizationGeoJson(points: OptimizationPoint[]): GeoJsonFeatureCo
           },
           properties: {
             site_id: index + 1,
-            device_type: point.device_type,
-            solar_power_kwh: point.solar_power_kwh,
+            device_type: 'wind',
             wind_power_kwh: point.wind_power_kwh,
-            ...(point.solar_probability !== undefined
-              ? { solar_probability: point.solar_probability }
-              : {}),
             ...(point.wind_probability !== undefined
               ? { wind_probability: point.wind_probability }
+              : {}),
+            ...(point.turbine_probability !== undefined
+              ? { turbine_probability: point.turbine_probability }
+              : {}),
+            ...(point.wind_speed !== undefined
+              ? { wind_speed: point.wind_speed }
               : {}),
             ...(point.expected_power_kwh !== undefined
               ? { expected_power_kwh: point.expected_power_kwh }
@@ -133,6 +132,9 @@ function buildOptimizationGeoJson(points: OptimizationPoint[]): GeoJsonFeatureCo
             ...(point.effective_cost_usd !== undefined
               ? { effective_cost_usd: point.effective_cost_usd }
               : {}),
+            ...(point.h3_index !== undefined
+              ? { h3_index: point.h3_index }
+              : {}),
           },
         },
       ]
@@ -142,10 +144,8 @@ function buildOptimizationGeoJson(points: OptimizationPoint[]): GeoJsonFeatureCo
 
 function App() {
   const [topographyVisible, setTopographyVisible] = useState(true)
-  const [solarVisible, setSolarVisible] = useState(false)
   const [windVisible, setWindVisible] = useState(true)
   const [windParticlesVisible, setWindParticlesVisible] = useState(true)
-  const [solarFarmsVisible, setSolarFarmsVisible] = useState(false)
   const [windFarmsVisible, setWindFarmsVisible] = useState(false)
   const [powerLinesVisible, setPowerLinesVisible] = useState(false)
   const [optimizationPanelOpen, setOptimizationPanelOpen] = useState(false)
@@ -178,9 +178,7 @@ function App() {
 
   const activeLayerCount =
     Number(topographyVisible) +
-    Number(solarVisible) +
     Number(windVisible) +
-    Number(solarFarmsVisible) +
     Number(windFarmsVisible) +
     Number(powerLinesVisible)
 
@@ -615,8 +613,8 @@ function App() {
                     <div>
                       <strong>Choose your layers</strong>
                       <p>
-                        Use the layers button in the lower left to show solar,
-                        wind, farms, terrain, and transmission context.
+                        Use the layers button in the lower left to show wind,
+                        farms, terrain, and transmission context.
                       </p>
                     </div>
                   </div>
@@ -649,10 +647,8 @@ function App() {
 
           <ArcGISMap
             topographyVisible={topographyVisible}
-            solarVisible={solarVisible}
             windVisible={windVisible}
             windParticlesVisible={windParticlesVisible}
-            solarFarmsVisible={solarFarmsVisible}
             windFarmsVisible={windFarmsVisible}
             powerLinesVisible={powerLinesVisible}
             optimizationSites={optimizationResult?.points ?? []}
@@ -669,21 +665,6 @@ function App() {
           <div className="map-bottom-left">
             <div className="map-bottom-left-row">
               <div className="legend-stack">
-                {solarVisible ? (
-                  <div className="map-overlay overlay-legend overlay-legend-inline">
-                    <div className="legend-header">
-                      <p className="panel-label">Solar irradiation</p>
-                      <span className="legend-unit">kWh/m²/day</span>
-                    </div>
-                    <div className="legend-bar" aria-hidden="true" />
-                    <div className="legend-values">
-                      <span>Lower resource</span>
-                      <span>Strong resource</span>
-                      <span>Peak resource</span>
-                    </div>
-                  </div>
-                ) : null}
-
                 {windVisible ? (
                   <div className="map-overlay overlay-legend overlay-legend-inline">
                     <div className="legend-header">
@@ -772,22 +753,6 @@ function App() {
                         />
                       </label>
 
-                      <label className="floating-layer-card">
-                        <div className="floating-layer-copy">
-                          <strong>Solar irradiation</strong>
-                          <p>Estimated solar resource intensity.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={solarVisible}
-                          onChange={() => {
-                            startTransition(() => {
-                              setSolarVisible((current) => !current)
-                            })
-                          }}
-                        />
-                      </label>
-
                       <div className="floating-layer-group">
                         <label className="floating-layer-card">
                           <div className="floating-layer-copy">
@@ -823,22 +788,6 @@ function App() {
                           </label>
                         ) : null}
                       </div>
-
-                      <label className="floating-layer-card">
-                        <div className="floating-layer-copy">
-                          <strong>Solar farm sites</strong>
-                          <p>Known solar farm locations.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={solarFarmsVisible}
-                          onChange={() => {
-                            startTransition(() => {
-                              setSolarFarmsVisible((current) => !current)
-                            })
-                          }}
-                        />
-                      </label>
 
                       <label className="floating-layer-card">
                         <div className="floating-layer-copy">

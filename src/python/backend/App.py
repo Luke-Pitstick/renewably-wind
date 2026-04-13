@@ -115,7 +115,7 @@ web_app = FastAPI()
 allowed_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://renewably-1.onrender.com",
+    "https://renewably-wind.onrender.com",
 ]
 extra_cors_origins = os.getenv("CORS_ALLOWED_ORIGINS", "").strip()
 if extra_cors_origins:
