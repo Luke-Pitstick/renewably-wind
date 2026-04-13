@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Strip AI co-author trailers so GitHub doesn't attribute contributions
+# to Claude/Codex on future commits in this repository.
+msg_file="$1"
+
+perl -0pi -e 's/\nCo-authored-by:.*(?:claude|codex).*(?=\n|\z)//ig; s/\n{3,}/\n\n/g; s/\n+\z/\n/' "$msg_file"
