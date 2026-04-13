@@ -193,7 +193,7 @@ function App() {
     ? 'Polygon selected on map'
     : 'No area selected'
   const hasBoundingBox = boundingBox !== null
-  const optimizationTargetValue = Number(optimizationValue)
+  const optimizationTargetValue = Number(optimizationValue.replace(/,/g, ''))
   const canSubmitOptimization =
     hasBoundingBox &&
     Number.isFinite(optimizationTargetValue) &&
