@@ -86,7 +86,7 @@ const API_BASE_URL =
   'http://127.0.0.1:8000'
 const LOCATION_SUGGEST_URL =
   'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest'
-const REPOSITORY_URL = 'https://github.com/Luke-Pitstick/renewably'
+const REPOSITORY_URL = 'https://github.com/Luke-Pitstick/renewably-wind'
 
 function isFiniteCoordinate(value: number) {
   return Number.isFinite(value)
@@ -150,6 +150,7 @@ function App() {
   const [powerLinesVisible, setPowerLinesVisible] = useState(false)
   const [optimizationPanelOpen, setOptimizationPanelOpen] = useState(false)
   const [layerMenuOpen, setLayerMenuOpen] = useState(false)
+  const [helpTab, setHelpTab] = useState<'quickstart' | 'economics'>('quickstart')
   const [helpModalOpen, setHelpModalOpen] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
@@ -594,9 +595,13 @@ function App() {
               >
                 <div className="legend-header app-help-modal-header">
                   <div>
-                    <p className="panel-label">Quick start</p>
+                    <p className="panel-label">
+                      {helpTab === 'quickstart' ? 'Quick start' : 'Sizing your inputs'}
+                    </p>
                     <h2 id="app-help-modal-title" className="app-help-modal-title">
-                      How to use Renewably
+                      {helpTab === 'quickstart'
+                        ? 'How to use Renewably'
+                        : 'Turbine costs & power'}
                     </h2>
                   </div>
                   <button
@@ -609,51 +614,151 @@ function App() {
                   </button>
                 </div>
 
-                <div className="app-help-modal-body">
-                  <div className="app-help-step">
-                    <span className="app-help-step-number">1</span>
-                    <div>
-                      <strong>Find a location</strong>
-                      <p>
-                        Search for a city, state, or address to move the map where
-                        you want to plan.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="app-help-step">
-                    <span className="app-help-step-number">2</span>
-                    <div>
-                      <strong>Choose your layers</strong>
-                      <p>
-                        Use the layers button in the lower left to show wind,
-                        farms, terrain, and transmission context.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="app-help-step">
-                    <span className="app-help-step-number">3</span>
-                    <div>
-                      <strong>Select an area to optimize</strong>
-                      <p>
-                        Open Optimize in the lower right, draw a polygon on the
-                        map, and set either your budget or required power target.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="app-help-step">
-                    <span className="app-help-step-number">4</span>
-                    <div>
-                      <strong>Review and export results</strong>
-                      <p>
-                        Inspect the recommended sites, compare totals, and export
-                        the selected locations as GeoJSON when you are ready.
-                      </p>
-                    </div>
-                  </div>
+                <div className="app-help-tabs" role="tablist">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={helpTab === 'quickstart'}
+                    className={`app-help-tab${helpTab === 'quickstart' ? ' is-active' : ''}`}
+                    onClick={() => setHelpTab('quickstart')}
+                  >
+                    Quick start
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={helpTab === 'economics'}
+                    className={`app-help-tab${helpTab === 'economics' ? ' is-active' : ''}`}
+                    onClick={() => setHelpTab('economics')}
+                  >
+                    Cost & power reference
+                  </button>
                 </div>
+
+                {helpTab === 'quickstart' ? (
+                  <div className="app-help-modal-body">
+                    <div className="app-help-step">
+                      <span className="app-help-step-number">1</span>
+                      <div>
+                        <strong>Find a location</strong>
+                        <p>
+                          Search for a city, state, or address to move the map where
+                          you want to plan.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="app-help-step">
+                      <span className="app-help-step-number">2</span>
+                      <div>
+                        <strong>Choose your layers</strong>
+                        <p>
+                          Use the layers button in the lower left to show wind,
+                          farms, terrain, and transmission context.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="app-help-step">
+                      <span className="app-help-step-number">3</span>
+                      <div>
+                        <strong>Select an area to optimize</strong>
+                        <p>
+                          Open Optimize in the lower right, draw a polygon on the
+                          map, and set either your budget or required power target.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="app-help-step">
+                      <span className="app-help-step-number">4</span>
+                      <div>
+                        <strong>Review and export results</strong>
+                        <p>
+                          Inspect the recommended sites, compare totals, and export
+                          the selected locations as GeoJSON when you are ready.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="app-help-modal-body app-help-economics">
+                    <p className="app-help-lead">
+                      Renewably models a single representative 3&nbsp;MW land-based
+                      turbine, using NREL ATB reference costs. Use these numbers to
+                      ballpark what to enter for budget or power targets.
+                    </p>
+
+                    <div className="app-help-card-grid">
+                      <div className="app-help-card">
+                        <span className="panel-label">Per turbine</span>
+                        <strong>3,000 kW</strong>
+                        <p>Rated capacity (3 MW)</p>
+                      </div>
+                      <div className="app-help-card">
+                        <span className="panel-label">CAPEX</span>
+                        <strong>$1,370 / kW</strong>
+                        <p>$4.11M installed per turbine</p>
+                      </div>
+                      <div className="app-help-card">
+                        <span className="panel-label">Fixed O&amp;M</span>
+                        <strong>$39 / kW / yr</strong>
+                        <p>$117k / turbine / yr</p>
+                      </div>
+                      <div className="app-help-card">
+                        <span className="panel-label">Lifetime</span>
+                        <strong>30 years</strong>
+                        <p>Assumed project life</p>
+                      </div>
+                      <div className="app-help-card app-help-card-highlight">
+                        <span className="panel-label">Lifetime cost</span>
+                        <strong>$7.62M / turbine</strong>
+                        <p>$2,540 / kW all-in</p>
+                      </div>
+                      <div className="app-help-card app-help-card-highlight">
+                        <span className="panel-label">Typical AEP</span>
+                        <strong>8–10 GWh / yr</strong>
+                        <p>At 7&nbsp;m/s mean wind</p>
+                      </div>
+                    </div>
+
+                    <div className="app-help-section">
+                      <strong>What "power" means in the target field</strong>
+                      <p>
+                        The optimizer reports annual kWh per site and sums over
+                        selected turbines. A strong Great Plains site produces
+                        roughly 8–10 million kWh/yr per 3&nbsp;MW turbine; a
+                        marginal site is closer to 4–5 million kWh/yr. Enter your
+                        target in kWh/yr.
+                      </p>
+                    </div>
+
+                    <div className="app-help-section">
+                      <strong>Rules of thumb</strong>
+                      <ul className="app-help-list">
+                        <li>
+                          <strong>Budget mode:</strong> $10M buys ~1 turbine,
+                          $100M buys ~13, $1B buys ~130.
+                        </li>
+                        <li>
+                          <strong>Power mode:</strong> 100 GWh/yr ≈ 10–15
+                          turbines in a good wind corridor, 25+ in a weak one.
+                        </li>
+                        <li>
+                          <strong>LCOE equivalent:</strong> $7.6M over ~240 GWh
+                          lifetime ≈ $0.032 / kWh before financing and tax
+                          credits.
+                        </li>
+                      </ul>
+                    </div>
+
+                    <p className="app-help-footnote">
+                      Source: NREL Annual Technology Baseline (ATB), land-based
+                      wind reference class. Actual project economics vary with
+                      turbine choice, interconnection, and siting constraints.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           ) : null}
