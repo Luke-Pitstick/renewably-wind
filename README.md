@@ -2,7 +2,7 @@
 
 Renewably is a renewable energy optimization platform for exploring wind and solar suitability, selecting candidate development areas, and generating optimized site recommendations.
 
-Live app: [https://renewably-1.onrender.com](https://renewably-1.onrender.com)
+Live app: [https://renewably-wind.onrender.com/](https://renewably-wind.onrender.com/)
 
 ![Renewably app screenshot](./src/app/frontend/public/picofapp.png)
 
