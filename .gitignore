@@ -3,6 +3,13 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Large data / geo assets (exceed GitHub size limits)
+src/python/backend/data/us_transmission_lines.geojson
+src/python/backend/data/tl_2023_us_primaryroads.*
+src/python/ml/data/renewably_exports/res7_terrain_30m.csv
+src/python/ml/data/renewably_exports/res7_terrain_coarse.csv
+src/python/ml/data/renewably_exports/terrain_res7_cache.csv
+
 # C extensions
 *.so
 

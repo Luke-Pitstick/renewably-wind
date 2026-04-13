@@ -41,16 +41,25 @@ type OptimizationPoint = {
   wind_power_kwh: number
   solar_probability?: number
   wind_probability?: number
+  turbine_probability?: number
   expected_power_kwh?: number
   selected_power_kwh?: number
   device_cost_usd?: number
+  cost_usd?: number
   effective_cost_usd?: number
+  h3_index?: string
+  feature_source?: 'exact_cache' | 'nearest_cache'
+  wind_speed?: number
 }
 
 type OptimizationResponse = {
   selected_count: number
   mode: 'cash' | 'power'
-  sample_count: number
+  sample_count?: number
+  hex_count?: number
+  hex_resolution?: number
+  device_cost_usd?: number
+  device_rated_kw?: number
   total_cost_usd?: number
   total_actual_cost_usd?: number
   total_expected_power_kwh?: number
@@ -1043,7 +1052,13 @@ function App() {
                 </div>
                 <div className="result-row">
                   <span>Sampled points</span>
-                  <strong>{optimizationResult.sample_count.toLocaleString()}</strong>
+                  <strong>
+                    {(
+                      optimizationResult.hex_count ??
+                      optimizationResult.sample_count ??
+                      0
+                    ).toLocaleString()}
+                  </strong>
                 </div>
                 <div className="result-row">
                   <span>Selected sites</span>

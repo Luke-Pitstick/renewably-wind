@@ -1,0 +1,18 @@
+[
+  "elevation_m",
+  "impervious",
+  "land_type",
+  "slope_deg",
+  "soil_type",
+  "protected_area",
+  "in_wdpa",
+  "pop_density",
+  "wind_speed",
+  "airport_dist_km",
+  "log_road_dist_km",
+  "log_transmission_line_dist_km",
+  "log_road_dist_km_x_transmission_line_dist_km",
+  "slope_x_elevation_m",
+  "wind_speed_x_elevation_m",
+  "wind_speed_x_slope_deg"
+]
