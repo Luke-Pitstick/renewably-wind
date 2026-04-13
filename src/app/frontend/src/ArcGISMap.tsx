@@ -970,82 +970,36 @@ function createThemeLayer(
     title: 'Wind speed',
     visible,
     popupEnabled: false,
-    effect: 'blur(0.7px)',
+    geometryType: 'polygon',
+    objectIdField: 'OBJECTID',
+    fields: [
+      { name: 'OBJECTID', type: 'oid' },
+      { name: 'wind_value', type: 'double' },
+    ],
     renderer: {
-      type: 'class-breaks',
-      field: 'wind_value',
-      defaultSymbol: {
+      type: 'simple',
+      symbol: {
         type: 'simple-fill',
-        color: 'rgba(52, 92, 168, 0.48)',
-        outline: {
-          color: 'rgba(255, 255, 255, 0)',
-          width: 0,
-        },
+        color: 'rgba(52, 92, 168, 0.6)',
+        outline: { color: 'rgba(255,255,255,0)', width: 0 },
       },
-      classBreakInfos: [
+      visualVariables: [
         {
-          minValue: 1.6,
-          maxValue: 2.1,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(52, 92, 168, 0.48)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Lower wind resource',
-        },
-        {
-          minValue: 2.1,
-          maxValue: 2.7,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(42, 158, 205, 0.54)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Moderate wind resource',
-        },
-        {
-          minValue: 2.7,
-          maxValue: 3.3,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(0, 178, 198, 0.58)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Balanced wind resource',
-        },
-        {
-          minValue: 3.3,
-          maxValue: 4.0,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(30, 188, 130, 0.64)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Strong wind resource',
-        },
-        {
-          minValue: 4.0,
-          maxValue: 4.6,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(168, 212, 48, 0.70)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Very strong wind resource',
-        },
-        {
-          minValue: 4.6,
-          maxValue: 5.0,
-          symbol: {
-            type: 'simple-fill',
-            color: 'rgba(255, 152, 48, 0.78)',
-            outline: { color: 'rgba(255,255,255,0)', width: 0 },
-          },
-          label: 'Peak wind resource',
+          type: 'color',
+          field: 'wind_value',
+          legendOptions: { title: 'Wind speed (m/s)' },
+          stops: [
+            { value: 1.6, color: 'rgba(52, 92, 168, 0.55)', label: 'Lower wind' },
+            { value: 2.4, color: 'rgba(42, 158, 205, 0.65)' },
+            { value: 3.0, color: 'rgba(0, 178, 198, 0.72)', label: 'Balanced wind' },
+            { value: 3.6, color: 'rgba(30, 188, 130, 0.78)' },
+            { value: 4.2, color: 'rgba(168, 212, 48, 0.85)' },
+            { value: 4.8, color: 'rgba(255, 152, 48, 0.92)', label: 'Peak wind' },
+          ],
         },
       ],
     },
-    opacity: 0.54,
+    opacity: 0.85,
   })
 }
 
